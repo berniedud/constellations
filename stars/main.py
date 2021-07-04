@@ -4,8 +4,7 @@ and any star can be reached by traversal of the graph, form any other star
 """
 from math import sqrt
 from random import random
-from typing import Tuple, Optional, Set
-
+from typing import Tuple, Optional, Set, List
 
 DEFAULT_STAR_COUNT = 5
 
@@ -81,14 +80,36 @@ def create_and_connect_stars(star_count: Optional[int] = None) -> dict:
     return stars
 
 
-def find_connected_stars(stars: dict, start_at_star: int, connected: Optional[set]) -> Set[int]:
+def find_connected_recursively(stars: dict, start_at_star: int, connected: Optional[set]) -> Set[int]:
     connected = connected if connected else set()    # make an empty set if None
     this_star = stars[start_at_star]
     this_stars_connections = this_star['connections']
     new_connections = this_stars_connections - connected
     connected |= new_connections
     for connected_star in new_connections:
-        connected = find_connected_stars(stars, connected_star, connected)
+        connected = find_connected_recursively(stars, connected_star, connected)
 
     return connected
 
+
+def find_connected_stars(stars: dict, start_at_star: int) -> Set[int]:
+    """
+    A wrapper for the 'real' recursive function, so we don't have to set the value of
+    the third parameter (connected) to None to use the function
+    :param stars:
+    :param start_at_star:
+    :return:
+    """
+    return find_connected_recursively(stars, start_at_star, None)
+
+
+def find_all_constellations(stars: dict) -> List[set]:
+    all_constellations = list()
+    stars_not_in_constellations = set(stars.keys())
+    while stars_not_in_constellations:
+        start_at_star = stars_not_in_constellations.pop()
+        this_constellation = find_connected_stars(stars, start_at_star)
+        all_constellations.append(this_constellation)
+        stars_not_in_constellations -= this_constellation
+
+    return all_constellations
