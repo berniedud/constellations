@@ -4,7 +4,7 @@ and any star can be reached by traversal of the graph, form any other star
 """
 from math import sqrt
 from random import random
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Set
 
 
 DEFAULT_STAR_COUNT = 5
@@ -79,3 +79,16 @@ def create_and_connect_stars(star_count: Optional[int] = None) -> dict:
     stars = connect_stars(stars)
 
     return stars
+
+
+def find_connected_stars(stars: dict, start_at_star: int, connected: Optional[set]) -> Set[int]:
+    connected = connected if connected else set()    # make an empty set if None
+    this_star = stars[start_at_star]
+    this_stars_connections = this_star['connections']
+    new_connections = this_stars_connections - connected
+    connected |= new_connections
+    for connected_star in new_connections:
+        connected = find_connected_stars(stars, connected_star, connected)
+
+    return connected
+
