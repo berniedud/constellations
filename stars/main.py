@@ -4,20 +4,20 @@ and any star can be reached by traversal of the graph, form any other star
 """
 from math import sqrt
 from random import random
-from typing import Tuple
+from typing import Tuple, Optional
 
 
-STAR_COUNT = 5
+DEFAULT_STAR_COUNT = 5
 
 
-def get_random_location() -> Tuple[float]:
+def get_random_location() -> Tuple[float, float]:
     location = (random(), random())
     return location
 
 
-def create_stars() -> dict:
+def create_stars(star_count: Optional[int] = None) -> dict:
     stars = dict()
-    for star_no in range(STAR_COUNT):
+    for star_no in range(star_count or DEFAULT_STAR_COUNT):
         location = get_random_location()
         stars[star_no] = dict(
             location=location,
@@ -74,8 +74,8 @@ def connect_stars(stars: dict) -> dict:
     return stars
 
 
-def create_and_connect_stars() -> dict:
-    stars = create_stars()
+def create_and_connect_stars(star_count: Optional[int] = None) -> dict:
+    stars = create_stars(star_count)
     stars = connect_stars(stars)
 
     return stars
