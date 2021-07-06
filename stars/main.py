@@ -99,6 +99,24 @@ def find_connected_recursively(stars: dict, start_at_star: int,
     return connected
 
 
+def find_connected_no_recursion(stars: dict, start_at_star: int) -> Set[int]:
+    """
+    non-recursive alternative method to traverse the graph (though it kind-of is)
+    :param stars:
+    :param start_at_star:
+    :return:
+    """
+    connected = set()
+    not_yet_checked = {start_at_star}
+    while not_yet_checked:
+        this_star = not_yet_checked.pop()
+        connected |= this_star
+        this_stars_connections = stars[this_star]['connections']
+        new_connections = this_stars_connections - connected
+        not_yet_checked |= new_connections
+
+    return connected
+
 def find_connected_stars(stars: dict, start_at_star: int) -> Set[int]:
     """
     A wrapper for the 'real' recursive function, so we don't have to set the value of
@@ -107,7 +125,8 @@ def find_connected_stars(stars: dict, start_at_star: int) -> Set[int]:
     :param start_at_star:
     :return:
     """
-    return find_connected_recursively(stars, start_at_star, None)
+    # return find_connected_recursively(stars, start_at_star, None)
+    return find_connected_no_recursion(stars, start_at_star)
 
 
 def find_all_constellations(stars: dict) -> List[set]:
